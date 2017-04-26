@@ -5,6 +5,7 @@ var categoriesRequest = new XMLHttpRequest();
 var products;
 var categories;
 var productList = document.getElementById("productList");
+var seasonSelect = document.getElementById("season");
 
 productsRequest.addEventListener("load", productsLoad);
 categoriesRequest.addEventListener("load", categoriesLoad);
@@ -22,6 +23,8 @@ function categoriesLoad(event) {
 	console.log("categories JSON loaded");
 	categories = JSON.parse(event.target.responseText);
 	console.log(categories);
+	//making sure categories loads first
+	productsRequest.send();
 }
 
 function loadError(event) {
@@ -29,17 +32,23 @@ function loadError(event) {
 }
 productsRequest.open("GET", "products.json");
 categoriesRequest.open("GET", "categories.json");
-productsRequest.send();
+
 categoriesRequest.send();
 
 function createList(object) {
 	var list = `<h1>Products</h1>`;
 	var items = object.products;
 	for (n=0;n<items.length;n+=1) {
-		console.log(items[n]);
+		//console.log(items[n]);
 		list += `<h3>`+items[n].name+`</h3>`;
 		list += `<p>`+items[n].price+`</p>`;
-		list += `<p>`+items[n].category_id+`</p>`;
+		console.log(categories.categories[0].id);
+		for(i=0; i<categories.categories.length; i+=1) {
+			if (items[n].category_id == categories.categories[i].id) {
+				list += `<p>`+categories.categories[i].name+`</p>`;
+			}
+		}
+
 	}
 	productList.innerHTML = list;
 };
