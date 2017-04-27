@@ -6,6 +6,13 @@ var products;
 var categories;
 var productList = document.getElementById("productList");
 var seasonSelect = document.getElementById("season");
+var seasonCode;
+seasonSelect.addEventListener("click", function(event) {
+	seasonCode = seasonSelect.value;
+	console.log(seasonSelect.value);
+	createList(products);
+
+});
 
 productsRequest.addEventListener("load", productsLoad);
 categoriesRequest.addEventListener("load", categoriesLoad);
@@ -41,10 +48,17 @@ function createList(object) {
 	for (n=0;n<items.length;n+=1) {
 		//console.log(items[n]);
 		list += `<h3>`+items[n].name+`</h3>`;
-		list += `<p>`+items[n].price+`</p>`;
-		console.log(categories.categories[0].id);
+		if(items[n].category_id === categories.categories[0].id && seasonSelect.value == 1) {
+			list += `<p>`+(items[n].price*(1-categories.categories[0].discount)).toFixed(2)+`</p>`;
+		} else if (items[n].category_id === categories.categories[1].id && seasonSelect.value == 2) {
+			list += `<p>`+(items[n].price*(1-categories.categories[1].discount)).toFixed(2)+`</p>`;
+		} else if (items[n].category_id === categories.categories[2].id && seasonSelect.value == 3) {
+			list += `<p>`+(items[n].price*(1-categories.categories[2].discount)).toFixed(2)+`</p>`;
+		} else {
+			list += `<p>`+items[n].price.toFixed(2)+`</p>`;
+		}
 		for(i=0; i<categories.categories.length; i+=1) {
-			if (items[n].category_id == categories.categories[i].id) {
+			if (items[n].category_id === categories.categories[i].id) {
 				list += `<p>`+categories.categories[i].name+`</p>`;
 			}
 		}
